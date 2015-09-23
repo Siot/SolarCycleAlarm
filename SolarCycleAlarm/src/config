@@ -1,0 +1,44 @@
+# Copyright (C) 2015 Llorenç Garcia Martinez
+#
+# This file is part of Solar Cycle Alarm.
+#
+# Solar Cycle Alarm program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Solar Cycle Alarm program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+[DEFAULT]
+Latitude = 41.53661
+Longitude = 2.10684
+TimeDeltaHours = 0
+TimeDeltaMinutes = 0
+SoundFile = alarm.wav
+#AutoMute and RepeatTime in minutes
+RepeatTime = 5
+#Loop 1 = yes, 0 = no
+Loop = 1
+#AutoMute stops after 10 minutes without action, only required if Loop = 1
+AutoMute = 10
+#TimeDeltaHours hours from next sunrise
+#TimedeltaMinutes minutes from next sunrise
+
+#Volum [0.0-10.0]
+Volume = 1
+
+[sunrise]
+#alarm for sunrise, fallbacks to DEFAULT
+TimeDeltaMinutes = -20
+
+#[10tosunrise]
+#TimeDeltaHours = -10
+#SoundFile = relax.ogg
+#Loop = 0
+#Volume = 0.4
