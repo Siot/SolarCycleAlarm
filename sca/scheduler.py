@@ -53,5 +53,6 @@ for section in config.sections():
   alarmTime = riseTime + timedelta(minutes=tdM,hours=tdH)
   alarmTime = alarmTime.astimezone(localtime).strftime("%H:%M")
   #print(alarmTime)
-  cmd = Popen(["echo","python",selfpath + "gst_bell.py",section],stdout=PIPE)
+  #cmd = Popen(["echo","python",selfpath + "bell.py",section,">> /var/log/sca.log"],stdout=PIPE)
+  cmd = Popen(["echo","python",selfpath + "bell.py",section],stdout=PIPE)
   call(["at", alarmTime],stdin=cmd.stdout)

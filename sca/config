@@ -1,0 +1,28 @@
+[DEFAULT]
+#Latitude and longitude format "2.2222"
+Latitude = 
+Longitude = 
+TimeDeltaHours = 0
+TimeDeltaMinutes = 0
+SoundFile = alarm.wav
+#AutoMute and RepeatTime in minutes
+RepeatTime = 5
+#Loop 1 = yes, 0 = no
+Loop = 1
+#AutoMute stops after 10 minutes without action, only required if Loop = 1
+AutoMute = 10
+#TimeDeltaHours hours from next sunrise
+#TimedeltaMinutes minutes from next sunrise
+
+#Volume [0.0-10.0]
+Volume = 1
+
+[sunrise]
+#alarm for sunrise, fallbacks to DEFAULT
+TimeDeltaMinutes = -20
+
+#[9tosunrise]
+#TimeDeltaHours = -9
+#SoundFile = relax.ogg
+#Loop = 0
+#Volume = 0.5

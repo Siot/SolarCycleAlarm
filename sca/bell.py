@@ -24,8 +24,8 @@ import configparser
 import argparse
 import time
 import math
-#import gi
-#gi.require_version("Gst", "1.0")
+import gi
+gi.require_version("Gst", "1.0")
 from gi.repository import Gst
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
@@ -36,38 +36,38 @@ GPIO.add_event_detect(24, GPIO.FALLING)
 
 class Main:
     def __init__(self):
-        selfpath = path.abspath(path.dirname(__file__)) + "/"
-        
+        print("START")
+        self.selfpath = path.abspath(path.dirname(__file__)) + "/"
+        print(self.selfpath)
         parser = argparse.ArgumentParser()
         parser.add_argument("alarmName")
         args = parser.parse_args()
         self.section = args.alarmName
 
-#        section = "10tosunrise"
-
-        config = configparser.ConfigParser()
-        config.read(selfpath + "config")
-        loop = config.get(self.section, 'Loop')
-        audiofile = config.get(self.section, 'SoundFile')
-        self.volume = float(config.get(self.section, 'Volume'))
+        self.config = configparser.ConfigParser()
+        self.config.read(self.selfpath + "config")
+        loop = self.config.get(self.section, 'Loop')
+        self.audiofile = self.selfpath + self.config.get(self.section, 'SoundFile')
+        print(self.audiofile)
+        self.volume = float(self.config.get(self.section, 'Volume'))
         
         self.player = Gst.ElementFactory.make("playbin", "player")
         fakesink = Gst.ElementFactory.make("fakesink", "fakesink")
         self.player.set_property("video-sink", fakesink)
+        audiosink = Gst.ElementFactory.make("alsasink", "alsasink")
+        self.player.set_property("audio-sink", audiosink)
 
-        if os.path.exists(audiofile):
-            self.filepath = os.path.realpath(audiofile)
-
+        if os.path.exists(self.audiofile):
             if(loop == '1'):
                 self.player.connect("about-to-finish",self._loop)
 
             self.player.set_property("volume", self.volume)
-            self.player.set_property("uri", "file://" + self.filepath)
+            self.player.set_property("uri", "file://" + self.audiofile)
             self.player.set_state(Gst.State.PAUSED)
             bus = self.player.get_bus()
             
             if(loop == '1' ):
-                automute = float(config.get(self.section, 'AutoMute'))*60
+                automute = float(self.config.get(self.section, 'AutoMute'))*60
             else:
                 bus.timed_pop_filtered(Gst.CLOCK_TIME_NONE, Gst.MessageType.ASYNC_DONE)
                 automute = math.ceil(self.player.query_duration(Gst.Format.TIME)[1]/1000000000)
@@ -77,18 +77,15 @@ class Main:
             startAlarm=time.perf_counter()
             while (time.perf_counter()-startAlarm < automute) and (True):
                 time.sleep(1)
-                print(time.perf_counter()-startAlarm)
                 if GPIO.event_detected(24):
-                  #reschedule = 1
-                  reschedule()
-                  #print("reschedule!")
+                  self._reschedule()
+                  print("Button repeat")
                   break
                 if GPIO.event_detected(23):
-                  #reschedule = 0
-                  #print("no reschedule!")
+                  print("Button stop")
                   break
               
-#        bus.timed_pop_filtered(Gst.CLOCK_TIME_NONE, Gst.MessageType.EOS | Gst.MessageType.ERROR)
+
             self.player.set_state(Gst.State.NULL)
             GPIO.cleanup()
         else:
@@ -98,16 +95,15 @@ class Main:
         print("END")
     
     def _loop(self, message):
-        self.player.set_property("uri", "file://" + self.filepath)
+        self.player.set_property("uri", "file://" + self.audiofile)
         self.player.set_property("volume", self.volume)
         
-    def reschedule():
-        cmd = Popen(["echo","python",selfpath + "bell.py",self.section],stdout=PIPE)
-        repeatTime = config.get(self.section, 'RepeatTime')
+    def _reschedule(self):
+        cmd = Popen(["echo","python",self.selfpath + "bell.py",self.section],stdout=PIPE)
+        repeatTime = self.config.get(self.section, 'RepeatTime')
         Popen(["at", "now", "+", repeatTime ,"minutes"],stdin=cmd.stdout)
         
         
 if __name__ == "__main__":
     Gst.init(None)
-    #GObject.threads_init()
     Main()

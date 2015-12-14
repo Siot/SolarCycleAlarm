@@ -1,0 +1,9 @@
+[Unit]
+Description=Solar Cycle Alarm scheduler
+Wants=atd.service
+
+[Service]
+ExecStart=/usr/bin/python /root/sca/scheduler.py
+
+[Install]
+WantedBy=multi-user.target

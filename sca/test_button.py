@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 # Copyright (C) 2015 Llorenç Garcia Martinez
 #
 # This file is part of Solar Cycle Alarm.
@@ -15,30 +17,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-[DEFAULT]
-Latitude = 41.53661
-Longitude = 2.10684
-TimeDeltaHours = 0
-TimeDeltaMinutes = 0
-SoundFile = alarm.wav
-#AutoMute and RepeatTime in minutes
-RepeatTime = 5
-#Loop 1 = yes, 0 = no
-Loop = 1
-#AutoMute stops after 10 minutes without action, only required if Loop = 1
-AutoMute = 10
-#TimeDeltaHours hours from next sunrise
-#TimedeltaMinutes minutes from next sunrise
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.add_event_detect(23, GPIO.FALLING)
+GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.add_event_detect(24, GPIO.FALLING)
 
-#Volum [0.0-10.0]
-Volume = 1
+while (True):
+    if GPIO.event_detected(24):
+        #reschedule = 1
+        print("black - reschedule!")
+        #break
+    if GPIO.event_detected(23):
+        #reschedule = 0
+        print("red - no reschedule!")
+        #break
 
-[sunrise]
-#alarm for sunrise, fallbacks to DEFAULT
-TimeDeltaMinutes = -20
-
-#[10tosunrise]
-#TimeDeltaHours = -10
-#SoundFile = relax.ogg
-#Loop = 0
-#Volume = 0.4
+GPIO.cleanup()
