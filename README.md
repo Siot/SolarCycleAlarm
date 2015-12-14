@@ -1,1 +1,1 @@
-# SolarCycleAlarrm
+# SolarCycleAlarm
