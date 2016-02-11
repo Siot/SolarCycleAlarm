@@ -1,0 +1,9 @@
+[Unit]
+Description=System clock adjust
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=1day
+
+[Install]
+WantedBy=timers.target

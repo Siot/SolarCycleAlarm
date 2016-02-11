@@ -1,0 +1,8 @@
+[Unit]
+Description=RTC to system clock sync
+
+[Service]
+ExecStart=/usr/bin/hwclock -s
+
+[Install]
+WantedBy=multi-user.target
